@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from django.contrib import messages
 
 load_dotenv()
 
@@ -131,6 +132,10 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS=[os.path.join(BASE_DIR,'extracker/static')]
 STATIC_ROOT=os.path.join(BASE_DIR, 'static')
 print(STATICFILES_DIRS)
+
+MESSAGE_TAGS={
+    messages.ERROR:'danger'
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

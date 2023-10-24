@@ -4,6 +4,7 @@ import json
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from validate_email import validate_email 
+from django.contrib import messages
 # Create your views here.
 
 class EmailValidationView(View):
@@ -31,4 +32,28 @@ class UsernameValidationView(View):
     
 class RegistrationView(View):
     def get(self,request):
+        return render(request, 'authentication/register_page.html')
+    def post(self,request):
+        #GET USER DATA
+        #VALIDATE
+        #CREATE A USER ACCOUNT
+
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+
+        context={
+            'fieldValues':request.POST
+        }
+
+        if not User.objects.filter(username=username).exists():
+            if not User.objects.filter(email=email).exists():
+                if len(password)<6:
+                    messages.error(request, "Password too short")
+                    return render(request, 'authentication/register_page.html',context)
+                user=User.objects.create_user(username=username,email=email)
+                user.set_password(password)
+                user.save()
+                messages.success(request, "Account successfully created.")
+                return render(request, 'authentication/register_page.html')
         return render(request, 'authentication/register_page.html')
