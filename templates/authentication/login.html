@@ -1,11 +1,51 @@
 {% extends 'base_auth.html' %}
+{% load static %}
 
 {% block content %}
 
-<div class="card">
-    <div class="card-body">
-        <h1>Login</h1>
-    </div>    
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-5">
+        <div class="card mt-5">
+            <div class="card-body">
+              <div class="card-title py-3">
+                <h4>Register for a free account</h4>
+                <form action="{% url 'register_page' %}" method="post">
+                    {% csrf_token %}
+                    {% include 'partials/_messages.html' %}
+                    <div class="form-group">
+                        <input type="text" name="username" placeholder="Username" id="usernameField" class="form-control form-control-sm" value="{{fieldValues.username}}"/>
+                    </div>
+
+                    <div class="invalid_feedback invalid-feedback" style="display:none">
+                    </div>
+
+                    <p class="text-sm text-success usernameSuccessOutput"></p>
+
+                    <div class="form-group">
+                        <input type="email" name="email" placeholder="Email" id="email-field" class="form-control form-control-sm" value="{{fieldValues.email}}"/>
+                    </div>
+
+                    <div class="emailfeedBackArea invalid-feedback" style="display:none">
+
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" name="password" placeholder="Password" id="password-field" class="form-control form-control-sm"/>
+                        <small class="float-right py-3 showPasswordToggle">SHOW</small>
+                    </div>
+                    <input type="submit" value="Register" class="btn btn-block btn-primary submit-btn">
+                </form>
+            </div>
+        </div>
+
+
+
+    </div>
+    <div class="col-md-3"></div>
 </div>
 
-{% endblock content %}
+
+<script src="{% static 'js/register.js' %}"></script>
+
+{% endblock %}
