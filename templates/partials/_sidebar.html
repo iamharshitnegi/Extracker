@@ -58,10 +58,11 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
-              <svg class="bi"><use xlink:href="#door-closed"/></svg>
-              Sign out
-            </a>
+
+            <form action="{% url 'logout' %}" method="POST">
+              {% csrf_token %}
+              <input class="nav-link" type="submit" value="Sign out"/>
+            </form>
           </li>
         </ul>
       </div>
