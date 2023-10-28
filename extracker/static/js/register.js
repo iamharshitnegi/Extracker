@@ -5,7 +5,7 @@ const emailfeedBackArea = document.querySelector(".emailfeedBackArea");
 const usernameSuccessOutput= document.querySelector(".usernameSuccessOutput");
 const showPasswordToggle = document.querySelector(".showPasswordToggle");
 const passwordField=document.querySelector("#password-field");
-const submitBtn = document.querySelector('.submit-btn')
+const submitBtn = document.querySelector('.submit-btn');
 
 const handleToggleInput=(e)=>{
     if(showPasswordToggle.textContent=="SHOW"){
