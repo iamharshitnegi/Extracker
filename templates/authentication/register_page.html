@@ -25,6 +25,7 @@
                     <div class="form-group">
                         <input type="email" name="email" placeholder="Email" id="email-field" class="form-control form-control-sm" value="{{fieldValues.email}}"/>
                     </div>
+                    <p class="text-sm text-success usernameSuccessOutput"></p>
 
                     <div class="emailfeedBackArea invalid-feedback" style="display:none">
 
@@ -32,7 +33,11 @@
 
                     <div class="form-group">
                         <input type="password" name="password" placeholder="Password" id="password-field" class="form-control form-control-sm"/>
-                        <small class="float-right py-3 showPasswordToggle">SHOW</small>
+                        <div class="container">
+                            <div class="row">
+                                <div class="text-end"><small class="float-right py-3 showPasswordToggle">HIDE</small></div>
+                            </div>
+                        </div>
                     </div>
                     <input type="submit" value="Register" class="btn btn-block btn-primary submit-btn">
                 </form>
