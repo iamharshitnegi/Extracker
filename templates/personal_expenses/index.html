@@ -24,11 +24,46 @@
       
     </div>
   </div>
+
+  <div class="container">
+
+    {% include 'partials/_messages.html' %}
+
+    {% if expenses.count %}
+
+    <table class="table table-stripped table-hover">
+      <thead>
+        <tr>
+          <th>Amount (CURRENNCY)</th>
+          <th>Category</th>
+          <th>Description</th>
+          <th>Date</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        {% for expense in expenses %}
+        <tr>
+          <td>{{expense.amount}}</td>
+          <td>{{expense.category}}</td>
+          <td>{{expense.description}}</td>
+          <td>{{expense.date}}</td>
+          <td><a href="{% url 'edit_expense' expense.id %}" class="btn btn-secondary btn-sm"></a>Edit</td>
+        </tr>
+
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% endif %}
+  </div>
   
 
 </div>
 
-{% include 'partials/_messages.html' %}
+
 
 
 
