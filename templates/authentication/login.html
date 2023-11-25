@@ -24,6 +24,17 @@
                     <input type="submit" value="Login" class="btn btn-block btn-primary submit-btn">
                 </form>
             </div>
+            <div class="container d-flex justify-content-between">
+                <div class="text-lead lead">
+                    Don't have an account? 
+                    <a href="{% url 'register_page' %}">Register</a>
+                </div>
+                <div class="text-lead lead">
+                    Forgot Password?
+                    <a href="{% url 'request-reset-password' %}">Reset</a>
+                </div>
+            </div>
+            
         </div> 
 
 
