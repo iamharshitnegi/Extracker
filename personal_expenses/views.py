@@ -13,12 +13,16 @@ from userSettings.models import UserSettings
 def index(request):
     categories= Category.objects.all()
     expenses=Expense.objects.filter(owner=request.user).order_by("-date")
-    currency_type = UserSettings.objects.get(user=request.user).currency
+    try:
+        currency_type = UserSettings.objects.get(user=request.user).currency
+    except UserSettings.DoesNotExist:
+        currency_type=None
     context={
         'expenses': expenses,
         'currency_type': currency_type
     }
     return render(request, 'personal_expenses/index.html', context)
+
 def add_expenses(request):
     categories= Category.objects.all()
     context = {
@@ -65,7 +69,7 @@ def edit_expense(request, id):
         'categories':categories
     }
     if request.method=='GET':
-        return render(request, 'personal_expenses/editExpense.html', context)
+        return render(request, 'personal_expenses/edit_expense.html', context)
    
     if request.method=='POST':
 
