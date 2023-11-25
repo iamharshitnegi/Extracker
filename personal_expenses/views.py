@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from .models import Category, Expense
 from django.contrib import messages
+from django.http import JsonResponse
+import json
 
 # Create your views here.
 @never_cache
@@ -94,4 +96,14 @@ def delete_expense(request,id):
      messages.success(request, 'Expense Removed')
      return redirect ('personal_expenses')
 
+def search_expenses(request):
+    if request.method == 'POST':
+        search_str = json.loads(request.body).get('searchText')
+        expenses = Expense.objects.filter(
+            amount__istartswith=search_str, owner=request.user) | Expense.objects.filter(
+            date__istartswith=search_str, owner=request.user) | Expense.objects.filter(
+            description__icontains=search_str, owner=request.user) | Expense.objects.filter(
+            category__icontains=search_str, owner=request.user)
+        data = expenses.values()
+        return JsonResponse(list(data), safe=False)
         

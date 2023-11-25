@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block content %}
 
 <div class="container mt-4">
@@ -30,32 +32,64 @@
     {% include 'partials/_messages.html' %}
 
     {% if expenses.count %}
+    <div class="row">
+      <div class="col-md-8"></div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search" id="textSearch">
+        </div>
+      </div>
+    </div>
 
-    <table class="table table-stripped table-hover">
-      <thead>
-        <tr>
-          <th>Amount (CURRENNCY)</th>
-          <th>Category</th>
-          <th>Description</th>
-          <th>Date</th>
-          <th></th>
-        </tr>
-      </thead>
+    <div class="app-table">
+      <table class="table table-stripped table-hover">
+        <thead>
+          <tr>
+            <th>Amount (CURRENNCY)</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Date</th>
+            <th></th>
+          </tr>
+        </thead>
+  
+        <tbody>
+  
+          {% for expense in expenses %}
+          <tr>
+            <td>{{expense.amount}}</td>
+            <td>{{expense.category}}</td>
+            <td>{{expense.description}}</td>
+            <td>{{expense.date}}</td>
+            <td><a href="{% url 'edit_expense' expense.id %}" class="btn btn-secondary btn-sm">Edit</a></td>
+          </tr>
+  
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
+    <p class="no-results" style="display: none;">No results </p>
+    <div class="table-output">
 
-      <tbody>
 
-        {% for expense in expenses %}
-        <tr>
-          <td>{{expense.amount}}</td>
-          <td>{{expense.category}}</td>
-          <td>{{expense.description}}</td>
-          <td>{{expense.date}}</td>
-          <td><a href="{% url 'edit_expense' expense.id %}" class="btn btn-secondary btn-sm"></a>Edit</td>
-        </tr>
+      <table class="table table-stripped table-hover">
+        <thead>
+          <tr>
+            <th>Amount (CURRENNCY)</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Date</th>
+            <th></th>
+          </tr>
+        </thead>
 
-        {% endfor %}
-      </tbody>
-    </table>
+        <tbody  class="table-body">
+
+
+        </tbody>
+      </table>
+    </div>
 
     {% endif %}
   </div>
@@ -63,8 +97,7 @@
 
 </div>
 
-
-
+<script src="{% static 'js/searchExpenses.js' %}"></script>
 
 
 {% endblock %}
