@@ -5,6 +5,7 @@ from .models import Category, Expense
 from django.contrib import messages
 from django.http import JsonResponse
 import json
+from userSettings.models import UserSettings
 
 # Create your views here.
 @never_cache
@@ -12,8 +13,10 @@ import json
 def index(request):
     categories= Category.objects.all()
     expenses=Expense.objects.filter(owner=request.user).order_by("-date")
+    currency_type = UserSettings.objects.get(user=request.user).currency
     context={
-        'expenses': expenses
+        'expenses': expenses,
+        'currency_type': currency_type
     }
     return render(request, 'personal_expenses/index.html', context)
 def add_expenses(request):
@@ -37,6 +40,10 @@ def add_expenses(request):
         
         if not description:
             messages.error(request, 'Description cannot be left blank')
+            return render(request, 'personal_expenses/add_expenses.html', context)
+        
+        if not date:
+            messages.error(request, 'Date cannot be left blank')
             return render(request, 'personal_expenses/add_expenses.html', context)
         
 
