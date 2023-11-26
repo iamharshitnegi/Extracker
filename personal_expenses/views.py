@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 import json
 from userSettings.models import UserSettings
+import datetime
 
 # Create your views here.
 @never_cache
@@ -117,4 +118,34 @@ def search_expenses(request):
             category__icontains=search_str, owner=request.user)
         data = expenses.values()
         return JsonResponse(list(data), safe=False)
+    
+def expense_summary(request):
+    present_date= datetime.date.today()
+    past_date= present_date-datetime.timedelta(days=30*6)
+    expenses= Expense.objects.filter( owner=request.user, date__gte=past_date, date__lte=present_date)
+
+    finalrep={}
+
+    def get_category(expense):
+        return expense.category
+    
+    category_list= list(set(map(get_category, expenses)))
+
+    def get_expense_category_amount(category):
+        amount=0
+        filtered_by_category=expenses.filter(category=category)
+
+        for item in filtered_by_category:
+            amount+=item.amount
         
+        return amount
+
+    for x in expenses:
+        for y in category_list:
+            finalrep[y]=get_expense_category_amount(y)
+
+    return JsonResponse({'expense_category_data': finalrep}, safe=False)
+
+
+def stats_view(request):
+    return render(request, 'personal_expenses/stats.html')
