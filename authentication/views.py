@@ -18,6 +18,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 class EmailValidationView(View):
     def post(self,request):
+        # Validate the email provided in the request
         data=json.loads(request.body)
         email= data['email']
 
@@ -29,6 +30,7 @@ class EmailValidationView(View):
 
 class UsernameValidationView(View):
     def post(self,request):
+        # Validate the username provided in the request
         data=json.loads(request.body)
         username= data['username']
 
@@ -41,6 +43,7 @@ class UsernameValidationView(View):
     
 class RegistrationView(View):
     def get(self,request):
+        # Render the registration page
         return render(request, 'authentication/register_page.html')
     def post(self,request):
         #GET USER DATA
@@ -71,6 +74,7 @@ class RegistrationView(View):
                 # encode uid
                 # token
 
+                # Generate activation link
                 uidb64= urlsafe_base64_encode(force_bytes(user.pk))
                 domain=get_current_site(request).domain
                 link=reverse('activate', kwargs={
@@ -78,6 +82,8 @@ class RegistrationView(View):
                 })
 
                 activate_url='http://'+domain+link
+
+                # Send activation email
                 email_subject = 'Activate your account'
                 email_body="Hi "+user.username+". Please click on this link to verify your account\n" + activate_url
                 email = EmailMessage(
@@ -95,6 +101,7 @@ class RegistrationView(View):
     
 class VerificationView(View):
     def get(self, request, uidb64, token):
+        # Verify user account using uidb64 and token
         try:
             id = force_str(urlsafe_base64_decode(uidb64))
             user = User.objects.get(pk=id)
@@ -103,6 +110,7 @@ class VerificationView(View):
             user = None
     
         if user is not None and token_generator.check_token(user, token):
+            # Activate the user account
             user.is_active = True
             user.save()
 
@@ -123,9 +131,11 @@ class VerificationView(View):
 
 class LoginView(View):
     def get(self, request):
+         # Render the login page
         return render(request, 'authentication/login.html')
     
     def post(self, request):
+        # Handle user login
         username=request.POST['username']
         password=request.POST['password']
 
@@ -151,16 +161,18 @@ class LoginView(View):
 
 class LogoutView(View):
     def post(self, request):
+        # Log out the user
         auth.logout(request)
         messages.success(request, "You have been logged out.")
         return redirect('login')
 
 class RequestPasswordResetEmail(View):
     def get(self, request):
+        # Render the password reset request page
         return render(request, 'authentication/reset_password.html')
 
     def post(self, request):
-        
+        # Handle the request for password reset email
         email = request.POST
 
         context:{
@@ -202,7 +214,7 @@ class RequestPasswordResetEmail(View):
 
 class CompletePasswordReset(View):
     def get(self, request, uidb64, token):
-
+        # Render the page for completing password reset
         context = {
             'uidb64': uidb64,
             'token': token
@@ -222,7 +234,7 @@ class CompletePasswordReset(View):
         return render(request, 'authenticatoin/set_new_password.html', context)
     
     def post(self, request, uidb64, token):
-
+        # Handle the completion of password reset
         context = {
             'uidb64': uidb64,
             'token': token

@@ -1,15 +1,20 @@
+//selecting DOM elements
 const textSearch = document.querySelector("#textSearch");
 
 const tableOutput = document.querySelector(".table-output");
 const appTable = document.querySelector(".app-table");
+// Initial setup: hiding the table output
 tableOutput.style.display = "none";
 const noResults = document.querySelector(".no-results");
 const tbody = document.querySelector(".table-body");
 
+// Event listener for the text search input
 textSearch.addEventListener("keyup", (e) => {
+  // Get the search value from the input
     const searchValue = e.target.value;
     console.log(searchValue);
   
+    // Check if there's a non-empty search value
     if (searchValue.trim().length > 0) {
       tbody.innerHTML = "";
       fetch("search-expenses", {
@@ -27,9 +32,11 @@ textSearch.addEventListener("keyup", (e) => {
           tableOutput.style.display = "block";
   
           if (data.length == 0) {
+            // Display a message when there are no results
             noResults.style.display = "block";
             tableOutput.style.display = "none";
           } else {
+            // Display the results in the table body
             noResults.style.display = "none";
             data.forEach((item) => {
               tbody.innerHTML += `
@@ -46,6 +53,7 @@ textSearch.addEventListener("keyup", (e) => {
           console.error("Error fetching data:", error);
         });
     } else {
+      // If search value is empty, hide the search results and show the original table
       tableOutput.style.display = "none";
       appTable.style.display = "block";
     }

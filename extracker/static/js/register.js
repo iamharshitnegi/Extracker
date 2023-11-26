@@ -1,3 +1,4 @@
+//selecting DOM elements
 const usernameField=document.querySelector('#usernameField');
 const emailField = document.querySelector("#email-field");
 const feedBackArea= document.querySelector('.invalid_feedback');
@@ -7,6 +8,7 @@ const showPasswordToggle = document.querySelector(".showPasswordToggle");
 const passwordField=document.querySelector("#password-field");
 const submitBtn = document.querySelector('.submit-btn');
 
+// Function to toggle password visibility
 const handleToggleInput=(e)=>{
     if(showPasswordToggle.textContent=="SHOW"){
         showPasswordToggle.textContent="HIDE";
@@ -18,17 +20,20 @@ const handleToggleInput=(e)=>{
     }
 };
 
-
+// Event listener for toggling password visibility
 showPasswordToggle.addEventListener('click', handleToggleInput);
 
+// Event listener for email field keyup event
 emailField.addEventListener("keyup", (e)=>{
 
     const emailVal=e.target.value;
 
+    // Resetting error styles
     emailField.classList.remove('is-invalid');
     emailfeedBackArea.style.display = "none";
 
     if(emailVal.length>0){
+        // Fetching email validation from the server
         fetch("/authentication/validate-email",{
             body: JSON.stringify({email: emailVal}),
             method: "POST",
@@ -46,16 +51,20 @@ emailField.addEventListener("keyup", (e)=>{
     }
 });
 
+
+// Event listener for username field keyup event
 usernameField.addEventListener("keyup", (e)=>{
 
     const usernameVal=e.target.value;
     usernameSuccessOutput.style.display = "block";
     usernameSuccessOutput.textContent = `Checking ${usernameVal}`;
 
+    // Resetting error styles
     usernameField.classList.remove('is-invalid');
     feedBackArea.style.display = "none";
 
     if(usernameVal.length>0){
+        // Fetching username validation from the server
         fetch("/authentication/validate-username",{
             body: JSON.stringify({username: usernameVal}),
             method: "POST",

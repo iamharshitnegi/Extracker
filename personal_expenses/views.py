@@ -3,10 +3,15 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from .models import Category, Expense
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 import json
 from userSettings.models import UserSettings
+import csv
 import datetime
+from django.template.loader import render_to_string
+from weasyprint import HTML
+import tempfile
+from django.db.models import Sum
 
 # Create your views here.
 @never_cache
@@ -117,7 +122,44 @@ def search_expenses(request):
             description__icontains=search_str, owner=request.user) | Expense.objects.filter(
             category__icontains=search_str, owner=request.user)
         data = expenses.values()
-        return JsonResponse(list(data), safe=False)
+    
+def export_csv(request):
+
+    response=HttpResponse(content_type='text/csv')
+    response['content-Disposotion'] = 'attachment; filename=Expenses' + str(datetime.datetime.now())+'csv'
+
+    writer = csv.writer(response)
+    writer.writerow(['Amount', 'Discription', 'Category', 'Date'])
+
+    expenses = Expense.objects.filter(owner = request.user)
+
+    for expense in expenses:
+        writer.writerow([expense.amount, expense.description, expense.category, expense.date])
+
+    return response
+
+def export_pdf(request):
+    
+    response=HttpResponse(content_type='application/pdf')
+    response['content-Disposotion'] = 'inlineattachment; filename=Expenses' + str(datetime.datetime.now())+'.pdf'
+    response['Content-Transfer-Encoding'] = 'binary'
+
+    expenses = Expense.objects.filter(owner = request.user)
+    sum=expenses.aggregate(Sum('amount'))
+
+    html_string=render_to_string('personal_expenses/pdf_output.html',{'expenses':expenses, 'total': sum['amount__sum']})
+    html=HTML(string=html_string)
+
+    result = html.write_pdf()
+
+    with tempfile.NamedTemporaryFile(delete=True) as output:
+        output.write(result)
+        output.flush()
+
+        output=open(output.name, 'rb')
+        response.write(output.read())
+    
+    return response
     
 def expense_summary(request):
     present_date= datetime.date.today()

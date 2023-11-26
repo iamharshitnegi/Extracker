@@ -33,7 +33,10 @@
 
     {% if expenses.count %}
     <div class="row" style="margin-top: 10px;">
-      <div class="col-md-8"></div>
+      <div class="col-md-8">
+        <a href="{% url 'export_csv' %}" class="btn btn-outline-dark">Export CSV</a>
+        <a href="{% url 'export_pdf' %}" class="btn btn-outline-dark">Export PDF</a>
+      </div>
       <div class="col-md-4">
         <div class="form-group">
           <input type="text" class="form-control" placeholder="Search" id="textSearch">
@@ -61,7 +64,7 @@
             <td>{{expense.category}}</td>
             <td>{{expense.description}}</td>
             <td>{{expense.date}}</td>
-            <td><a href="{% url 'edit_expense' expense.id %}" class="btn btn-primary btn-sm">Edit</a></td>
+            <td><a href="{% url 'edit_expense' expense.id %}" class="btn btn-outline-dark btn-sm">Edit</a></td>
           </tr>
   
           {% endfor %}
