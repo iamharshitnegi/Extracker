@@ -172,8 +172,9 @@ class RequestPasswordResetEmail(View):
         return render(request, 'authentication/reset_password.html')
 
     def post(self, request):
+        
         # Handle the request for password reset email
-        email = request.POST
+        email = request.POST['email']
 
         context:{
             'values': request.POST
@@ -185,12 +186,12 @@ class RequestPasswordResetEmail(View):
 
         domain=get_current_site(request).domain
 
-        user = request.objects.filter(email=email)
+        user = User.objects.get(email=email)
 
         uidb64= urlsafe_base64_encode(force_bytes(user.pk))
 
-        if user.exists():
-            link=reverse('reset-user-password', kwargs={
+        if user:
+            link=reverse('set-new-password', kwargs={
                     'uidb64':uidb64, 'token':PasswordResetTokenGenerator().make_token(user)
                 })
 
@@ -206,7 +207,7 @@ class RequestPasswordResetEmail(View):
 
             email.send(fail_silently=False)
 
-        messages.succes(request, "we have sent you an email to reset your password")
+        messages.success(request, "we have sent you an email to reset your password")
         
 
         return render(request, 'authentication/reset_passwowrd.html')    
@@ -226,12 +227,12 @@ class CompletePasswordReset(View):
 
             if not PasswordResetTokenGenerator().check_token(user, token):
                 messages.info(request, 'Password link is invalid, Please rquest a new one')
-                return render(request, 'authenticatoin/set_new_password.html')
+                return render(request, 'authentication/set_new_password.html')
     
         except Exception as identifier:
            pass
 
-        return render(request, 'authenticatoin/set_new_password.html', context)
+        return render(request, 'authentication/set_new_password.html', context)
     
     def post(self, request, uidb64, token):
         # Handle the completion of password reset
@@ -245,11 +246,11 @@ class CompletePasswordReset(View):
 
         if password!=password2:
             messages.error(request, "Passwords don't match")
-            return render(request, 'authenticatoin/set_new_password.html', context)
+            return render(request, 'authentication/set_new_password.html', context)
 
         if len(password) < 6:
             messages.error(request, 'Password too short')
-            return render(request, 'authenticatoin/set_new_password.html', context)
+            return render(request, 'authentication/set_new_password.html', context)
 
         try:
             user_id = force_str(urlsafe_base64_decode(uidb64))
@@ -262,7 +263,7 @@ class CompletePasswordReset(View):
     
         except Exception as identifier:
             messages.info(request, 'Something went wrong, try again')
-            return render(request, 'authenticatoin/set_new_password.html', context)
+            return render(request, 'authentication/set_new_password.html', context)
 
        
 

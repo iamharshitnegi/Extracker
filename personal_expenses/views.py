@@ -13,7 +13,7 @@ from weasyprint import HTML
 import tempfile
 from django.db.models import Sum
 
-# Create your views here.
+# Display the index page with a list of expenses
 @never_cache
 @login_required(login_url='/authentication/login')
 def index(request):
@@ -29,6 +29,9 @@ def index(request):
     }
     return render(request, 'personal_expenses/index.html', context)
 
+
+# Add a new expense
+@login_required(login_url='/authentication/login')
 def add_expenses(request):
     categories= Category.objects.all()
     context = {
@@ -66,6 +69,8 @@ def add_expenses(request):
     return render(request, 'personal_expenses/add_expenses.html', context)
     
 
+# Edit an existing expense
+@login_required(login_url='/authentication/login')
 def edit_expense(request, id):
     expense= Expense.objects.get(pk=id)
     categories= Category.objects.all()
@@ -94,7 +99,7 @@ def edit_expense(request, id):
             messages.error(request, 'Description cannot be left blank')
             return render(request, 'personal_expenses/edit_expense.html', context)
         
-
+        # Update the existing expense
         expense.owner=request.user 
         expense.amount=amount 
         expense.date=date
@@ -113,6 +118,7 @@ def delete_expense(request,id):
      messages.success(request, 'Expense Removed')
      return redirect ('personal_expenses')
 
+# Search expenses based on amount, date, description, or category
 def search_expenses(request):
     if request.method == 'POST':
         search_str = json.loads(request.body).get('searchText')
@@ -122,6 +128,8 @@ def search_expenses(request):
             description__icontains=search_str, owner=request.user) | Expense.objects.filter(
             category__icontains=search_str, owner=request.user)
         data = expenses.values()
+        return JsonResponse(list(data), safe=False)
+
     
 def export_csv(request):
 
@@ -161,6 +169,9 @@ def export_pdf(request):
     
     return response
     
+
+
+# Retrieve a summary of expenses for the last 6 months    
 def expense_summary(request):
     present_date= datetime.date.today()
     past_date= present_date-datetime.timedelta(days=30*6)
@@ -188,6 +199,6 @@ def expense_summary(request):
 
     return JsonResponse({'expense_category_data': finalrep}, safe=False)
 
-
+# Display the statistics view
 def stats_view(request):
     return render(request, 'personal_expenses/stats.html')

@@ -6,10 +6,12 @@
 <div class="row w-100 h-100">
     <div class="col-md-4"></div>
     <div class="col-md-5">
+        <!-- Login Card -->
         <div class="card mt-5 register-box">
             <div class="card-body register-box">
               <div class="card-title py-3">
                 <h4>Login to your account</h4>
+                <!-- Login Form -->
                 <form action="{% url 'login' %}" method="post">
                     {% include 'partials/_messages.html' %}
                     {% csrf_token %}
@@ -24,6 +26,8 @@
                     <input type="submit" value="Login" class="btn btn-block btn-primary submit-btn">
                 </form>
             </div>
+
+            <!-- Links for Registration and Password Reset -->
             <div class="container d-flex justify-content-between">
                 <div class="text-lead lead">
                     Don't have an account? 

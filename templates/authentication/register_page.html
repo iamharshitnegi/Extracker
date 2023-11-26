@@ -6,14 +6,20 @@
 <div class="row w-100 h-100">
     <div class="col-md-4"></div>
     <div class="col-md-5">
+
+        <!-- Registration Card -->
         <div class="card mt-5 register-box">
             <div class="card-body register-box">
               <div class="card-title py-3">
                 <h4 class="d-flex justify-content-center">Register for a free account</h4>
                 <br>
+
+                <!-- Registration Form -->
                 <form action="{% url 'register_page' %}" method="post">
                     {% csrf_token %}
                     {% include 'partials/_messages.html' %}
+
+                    <!-- Username Input -->
                     <div class="form-group">
                         <input type="text" name="username" placeholder="Username" id="usernameField" class="form-control form-control-sm" value="{{fieldValues.username}}"/>
                     </div>
@@ -23,6 +29,8 @@
 
                     <p class="text-sm text-success usernameSuccessOutput"></p>
 
+
+                    <!-- Email Input -->
                     <div class="form-group">
                         <input type="email" name="email" placeholder="Email" id="email-field" class="form-control form-control-sm" value="{{fieldValues.email}}"/>
                     </div>
@@ -32,6 +40,8 @@
 
                     </div>
 
+
+                    <!-- Password Input -->
                     <div class="form-group">
                         <input type="password" name="password" placeholder="Password" id="password-field" class="form-control form-control-sm"/>
                         <div class="container">
